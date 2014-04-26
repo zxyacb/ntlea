@@ -1,0 +1,29 @@
+
+#include <winresrc.h>
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1, 0, 0, 1
+PRODUCTVERSION 1, 0, 0, 1
+FILEFLAGS 0x0L
+FILEFLAGSMASK 0x3fL
+FILETYPE 0x2L
+FILESUBTYPE 0x0L
+BEGIN
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0804, 0x04B0
+	END
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "080404b0"
+		BEGIN
+			VALUE "CompanyName", "LWL"
+			VALUE "FileDescription", "ntlea context menu component"
+			VALUE "FileVersion", "1.0.0.1"
+			VALUE "InternalName", "ntleasCtx.dll"
+			VALUE "LegalCopyright", "Copyright (C) Since 2014"
+			VALUE "OriginalFilename", "ntleasCtx.dll"
+			VALUE "ProductName", "ntlea"
+			VALUE "ProductVersion", "1.0.0.1"
+		END
+	END
+END

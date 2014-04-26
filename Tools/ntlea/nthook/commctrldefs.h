@@ -1,0 +1,46 @@
+
+#ifndef __COMMCTRLDEFS_H__
+#define __COMMCTRLDEFS_H__
+
+// ------ TabCtrl ------ 
+#define TCIF_TEXT			0x0001
+#define TCM_ADD_UNICODE		55
+#define TCM_GETITEMA		0x1305
+#define TCM_GETITEMW		0x133C
+#define TCM_SETITEMA		0x1306
+#define TCM_SETITEMW		0x133D
+#define TCM_INSERTITEMA		0x1307
+#define TCM_INSERTITEMW		0x133E
+
+// ------ ListView ------
+#define LVIF_TEXT			0x0001
+#define LVCF_TEXT			0x0004
+#define LVM_ADD_UNICODE		70
+#define LVM_GETITEMA		0x1005
+#define LVM_GETITEMW		0x104B
+#define LVM_SETITEMA		0x1006
+#define LVM_SETITEMW		0x104C
+#define LVM_INSERTITEMA		0x1007
+#define LVM_INSERTITEMW		0x104D
+#define LVM_GETCOLUMNA		0x1019
+#define LVM_GETCOLUMNW		0x105F
+#define LVM_SETCOLUMNA		0x101A
+#define LVM_SETCOLUMNW		0x1060
+#define LVM_INSERTCOLUMNA	0x101B
+#define LVM_INSERTCOLUMNW	0x1061
+
+// ------ TreeView ------
+#define TVIF_TEXT			0x0001
+#define TVM_ADD_UNICODE		50
+#define TVM_GETITEMA		0x110C
+#define TVM_GETITEMW		0x113E
+#define TVM_SETITEMA		0x110D
+#define TVM_SETITEMW		0x113F
+#define TVM_INSERTITEMA		0x1100
+#define TVM_INSERTITEMW		0x1132
+
+typedef LRESULT(CALLBACK *SUBCLASSPROC)(
+	HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData
+	);
+
+#endif // __COMMCTRLDEFS_H__

@@ -244,9 +244,10 @@ static LRESULT CALLBACK TopLevelWindowProcEx(CALLPROC DefaultCallWindowProc, HWN
 		LPSTR lParamA = AllocateZeroedMemory(siz * sizeof(wchar_t));
 		*(short*)(DWORD_PTR)lParam = (short)(siz - 1);
 		int len = (int)CallWindowProcA(PrevWndProc, hWnd, uMsg, wParam, (LPARAM)lParamA);
-		if (!len || len + 1 != MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len + 1, (LPWSTR)lParam, siz)) {
-			*(LPWSTR)lParam = L'\0';
-		}
+		if (len) // if success : 
+			len = MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len+1, (LPWSTR)lParam, siz); // --- bugfixed
+		if (!len && lParam) *(LPWSTR)lParam = L'\0'; // handle failed case 
+		else if (len) --len; // report not-including null-terminate string !
 		if (lParamA) FreeStringInternal((LPVOID)lParamA);
 		return len;
 	}//	break;
@@ -375,9 +376,10 @@ static LRESULT CALLBACK TopLevelWindowProcEx(CALLPROC DefaultCallWindowProc, HWN
 		if (ret != -1) {
 			LPSTR lParamA = AllocateZeroedMemory(MAX_PATH * sizeof(wchar_t));
 			int len = (int)CallWindowProcA(PrevWndProc, hWnd, uMsg, wParam, (LPARAM)lParamA);
-			if (!len || !MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len + 1, (LPWSTR)lParam, MAX_PATH)) {
-				if (lParam) *(LPWSTR)lParam = L'\0';
-			}
+			if (len) // if success : 
+				len = MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len+1, (LPWSTR)lParam, MAX_PATH); // --- bugfixed
+			if (!len && lParam) *(LPWSTR)lParam = L'\0'; // handle failed case !
+			else if (len) --len; // report not-including null-terminate string !
 			if (lParamA/*ebx*/) FreeStringInternal((LPVOID)lParamA);
 			return len;
 		}
@@ -416,10 +418,10 @@ static LRESULT CALLBACK TopLevelWindowProcEx(CALLPROC DefaultCallWindowProc, HWN
 				LPSTR lParamA = AllocateZeroedMemory(MAX_PATH * sizeof(wchar_t));
 				// LN999
 				int len = (int)CallWindowProcA(PrevWndProc, hWnd, uMsg, wParam, (LPARAM)lParamA);
-				if (!len || !MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len + 1, (LPWSTR)lParam, MAX_PATH)) { // should be -1 ?? 
-					// L111
-					if (lParam) *(LPWSTR)lParam = L'\0';
-				}
+				if (len) // if success : 
+					len = MultiByteToWideChar(settings.dwCodePage, 0, lParamA, len+1, (LPWSTR)lParam, MAX_PATH); // --- bugfixed
+				if (!len && lParam) *(LPWSTR)lParam = L'\0'; // L111
+				else if (len) --len; // report not-including null-terminate string !
 				// LN995
 				if (lParamA) FreeStringInternal((LPVOID)lParamA);
 				return len;
@@ -488,10 +490,10 @@ static LRESULT SendUnicodeMessage(LPVOID lpProcAddress, HWND hWnd, UINT uMsg, WP
 	WCHAR CharBuffer[2];
 	int type = 0;
 
-//	char classname[256]; GetClassNameA(hWnd, classname, sizeof(classname));
-//	if (lstrcmpiA(classname, "TRadioButton") == 0) {
-//	ntprintfA(256, 1, "%s: proc-%p hwnd=%p, msg=%04x, wParam=%d, lParam=%d\n", __FUNCTION__, lpProcAddress, hWnd, uMsg, wParam, lParam);
-//	}
+	//char classname[256]; GetClassNameA(hWnd, classname, sizeof(classname));
+	//if (lstrcmpiA(classname, "TListBox") == 0) {
+	//ntprintfA(256, 1, "%s: proc-%p hwnd=%p, msg=%04x, wParam=%d, lParam=%d\n", __FUNCTION__, lpProcAddress, hWnd, uMsg, wParam, lParam);
+	//}
 
 	switch (uMsg) {
 	case WM_CREATE: // L304
@@ -554,9 +556,10 @@ static LRESULT SendUnicodeMessage(LPVOID lpProcAddress, HWND hWnd, UINT uMsg, WP
 			LPWSTR lParamW = AllocateZeroedMemory(siz * sizeof(wchar_t));
 			*(short*)(DWORD_PTR)lParam = (short)(siz - 1);
 			int len = (int)CallWindowSendMessage(lpProcAddress, hWnd, uMsg, wParam, (LPARAM)lParamW, Param1, Param2, Param3, FunctionType);
-			if (!len || len + 1 != WideCharToMultiByte(CP_ACP, 0, lParamW, len + 1, (LPSTR)lParam, siz, NULL, NULL)) {
-				*(LPSTR)lParam = '\0';
-			}
+			if (len) // if success: 
+				len = WideCharToMultiByte(CP_ACP, 0, lParamW, len+1, (LPSTR)lParam, siz, NULL, NULL); // --- bugfixed
+			if (!len && lParam) *(LPSTR)lParam = '\0'; // handle failed case !
+			else if (len) --len; // report not-including null-terminate string !
 			if (lParamW) FreeStringInternal(lParamW);
 			return len;
 		}
@@ -641,9 +644,10 @@ static LRESULT SendUnicodeMessage(LPVOID lpProcAddress, HWND hWnd, UINT uMsg, WP
 		if (ret != -1) {
 			LPWSTR lParamW = AllocateZeroedMemory(MAX_PATH * sizeof(wchar_t));
 			int len = (int)CallWindowSendMessage(lpProcAddress, hWnd, uMsg, wParam, (LPARAM)lParamW, Param1, Param2, Param3, FunctionType);
-			if (!len || !WideCharToMultiByte(CP_ACP, 0, lParamW, len + 1, (LPSTR)lParam, MAX_PATH, NULL, NULL)) {
-				if (lParam) *(LPSTR)lParam = '\0';
-			}
+			if (len) // if success, do conversion : 
+				len = WideCharToMultiByte(CP_ACP, 0, lParamW, len + 1, (LPSTR)lParam, MAX_PATH, NULL, NULL); // --- bugfixed
+			if (!len && lParam) *(LPSTR)lParam = '\0'; // handle failed case !
+			else if (len) --len; // report not-including null-terminate string !
 			if (lParamW/*ebx*/) FreeStringInternal(lParamW);
 			return len;
 		}

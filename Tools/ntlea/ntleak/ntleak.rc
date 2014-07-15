@@ -1,8 +1,8 @@
 //
 #include <winresrc.h>
 VS_VERSION_INFO VERSIONINFO
-	FILEVERSION 1,0,0,43
-	PRODUCTVERSION 1,0,0,43
+	FILEVERSION 1,0,0,44
+	PRODUCTVERSION 1,0,0,44
 	FILEFLAGS 0x0L
 	FILEFLAGSMASK 0x3fL
 	FILETYPE 0x2L
@@ -18,12 +18,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "LWL"
             VALUE "FileDescription", "ntlea inject component"
-            VALUE "FileVersion", "1.0.0.43"
+            VALUE "FileVersion", "1.0.0.44"
             VALUE "InternalName", "ntleak.dll"
             VALUE "LegalCopyright", "Copyright (C) Since 2014"
             VALUE "OriginalFilename", "ntleak.dll"
             VALUE "ProductName", "ntlea"
-            VALUE "ProductVersion", "1.0.0.43"
+            VALUE "ProductVersion", "1.0.0.44"
         END
 	END
 END

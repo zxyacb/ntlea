@@ -93,6 +93,7 @@
       <AdditionalDependencies>Kernel32.lib;User32.lib;Version.lib;Gdi32.lib;Shlwapi.lib;Shell32.lib;ole32.lib;oleaut32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

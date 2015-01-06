@@ -95,11 +95,21 @@ int CreateProcessPatchA(NtleaProcess * process, char const* lpFileName) {
 		if (hmod) PatchAppCheckRunApp(hmod); // i'll append this!
 	}
 	HANDLE hexecute = CreateFileA((LPCSTR)lpFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (hexecute == INVALID_HANDLE_VALUE) {
+	if (hexecute == INVALID_HANDLE_VALUE) { // now let's check system directory 
 		LPSTR lpFilepath = (LPSTR)FileBuffer;
 		GetSystemDirectoryA(lpFilepath, MAX_PATH); lstrcatA(lpFilepath, "\\");
 		lstrcatA(lpFilepath, lpFileName);
 		hexecute = CreateFileA(lpFilepath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	}
+	if (hexecute == INVALID_HANDLE_VALUE) { // now let's check executable directory
+		LPSTR lpFilepath = (LPSTR)FileBuffer;
+		LPCSTR p = GetModuleFileNameA(NULL, lpFilepath, MAX_PATH) + lpFilepath;
+		while (p > lpFilepath && *p != '\\') --p;
+		if (*p == '\\') {
+			UINT PathLength = (UINT)(p + 1 - lpFilepath); lpFilepath[PathLength] = '\0'; // make as tail 
+			lstrcatA(lpFilepath, lpFileName);
+			hexecute = CreateFileA(lpFilepath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		}
 	}
 	if (hexecute == INVALID_HANDLE_VALUE) {
 		return ERR_EXECUTABLE_MISSING;
@@ -118,11 +128,21 @@ int CreateProcessPatchW(NtleaProcess * process, wchar_t const* lpFileName) {
 		if (hmod) PatchAppCheckRunApp(hmod);
 	}
 	HANDLE hexecute = CreateFileW((LPCWSTR)lpFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (hexecute == INVALID_HANDLE_VALUE) {
+	if (hexecute == INVALID_HANDLE_VALUE) { // now let's check system directory 
 		LPWSTR lpFilepath = (LPWSTR)FileBuffer;
 		GetSystemDirectoryW(lpFilepath, MAX_PATH); lstrcatW(lpFilepath, L"\\"); 
 		lstrcatW(lpFilepath, lpFileName);
 		hexecute = CreateFileW(lpFilepath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	}
+	if (hexecute == INVALID_HANDLE_VALUE) { // now let's check executable directory
+		LPWSTR lpFilepath = (LPWSTR)FileBuffer;
+		LPCWSTR p = GetModuleFileNameW(NULL, lpFilepath, MAX_PATH) + lpFilepath;
+		while (p > lpFilepath && *p != L'\\') --p;
+		if (*p == L'\\') {
+			UINT PathLength = (UINT)(p + 1 - lpFilepath); lpFilepath[PathLength] = L'\0'; // make as tail 
+			lstrcatW(lpFilepath, lpFileName);
+			hexecute = CreateFileW(lpFilepath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		}
 	}
 	if (hexecute == INVALID_HANDLE_VALUE) {
 		return ERR_EXECUTABLE_MISSING;

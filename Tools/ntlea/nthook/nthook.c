@@ -1260,7 +1260,7 @@ HFONT WINAPI HookCreateFontIndirect(const LOGFONT *lplf) {
 #endif
 	// any input CP_ACP or any value would be settings.dwCodePage finally ... 
 	MultiByteToWideChar(settings.dwCodePage/*???*/, 0, (
-#if 0
+#if 1 // TODO: fixme, if open this flag, some games will explicit error font while force specify fontname !
 		settings.bForceSpecifyFont ? (LPCSTR)settings.lpFontFaceName : 
 #endif
 		(LPCSTR)lplf->lfFaceName), -1, logfont.lfFaceName, LF_FACESIZE);
